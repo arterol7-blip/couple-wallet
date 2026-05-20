@@ -509,7 +509,7 @@
           <button class="calc-btn utility" type="button" data-calc="use-current">帶入</button>
         </div>
         <button class="calc-apply-btn" id="calculatorApplyBtn" type="button">套用到金額</button>
-        <p class="calc-hint">可以直接算例如 860+140+60。若結果是負數，會自動切換為「支出」，並把絕對值填入金額欄。</p>
+        <p class="calc-hint">計算機套用採儲值帳本邏輯：結果為正數會記為儲值；結果為負數會自動切換為支出，並把絕對值填入金額欄。直接手動輸入金額時，仍依照上方選擇的儲值／支出紀錄。</p>
       </div>
 
       <label for="noteInput">備註</label>
@@ -655,12 +655,34 @@
       }
 
       const lastChar = calculatorExpression.slice(-1);
+      const secondLastChar = calculatorExpression.slice(-2, -1);
       const isOperator = ["+", "-", "*", "/"].includes(value);
       const lastIsOperator = ["+", "-", "*", "/"].includes(lastChar);
+      const secondLastIsOperator = ["+", "-", "*", "/"].includes(secondLastChar);
+
+      // Allow negative numbers at the beginning, e.g. -1000+100
+      if (value === "-" && calculatorExpression === "") {
+        calculatorExpression = "-";
+        updateCalculatorDisplay();
+        return;
+      }
+
+      // Allow negative numbers right after another operator, e.g. 1000+-100 or 1000*-2
+      if (value === "-" && lastIsOperator && lastChar !== "-") {
+        calculatorExpression += value;
+        updateCalculatorDisplay();
+        return;
+      }
 
       if (isOperator && calculatorExpression === "") return;
+
+      // Replace duplicated operators, but keep patterns like +-, *-, /- for negative numbers.
       if (isOperator && lastIsOperator) {
-        calculatorExpression = calculatorExpression.slice(0, -1) + value;
+        if (lastChar === "-" && secondLastIsOperator) {
+          calculatorExpression = calculatorExpression.slice(0, -2) + value;
+        } else {
+          calculatorExpression = calculatorExpression.slice(0, -1) + value;
+        }
       } else {
         calculatorExpression += value;
       }
@@ -714,17 +736,13 @@
       evaluateCalculatorExpression(true);
 
       if (!calculatorValue || calculatorValue === 0) {
-        alert("計算結果不能是 0");
+        alert("計算結果是 0，不需要新增紀錄");
         return;
       }
 
-      if (calculatorValue < 0) {
-        setType("expense");
-        amountInput.value = String(Math.abs(calculatorValue));
-      } else {
-        amountInput.value = String(calculatorValue);
-      }
-
+      const finalType = calculatorValue > 0 ? "deposit" : "expense";
+      setType(finalType);
+      amountInput.value = String(Math.abs(calculatorValue));
       calculatorPanel.classList.remove("show");
     }
 
