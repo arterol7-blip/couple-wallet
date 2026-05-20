@@ -311,7 +311,7 @@
       <div class="status-row">
         <div><span class="status-dot" id="statusDot"></span><span id="statusText">尚未連線</span></div>
       </div>
-      <p class="hint">你和女友輸入同一個帳本 ID，就會同步同一份資料。帳本 ID 不要太簡單，例如不要只叫 love。</p>
+      <p class="hint">第一次設定帳本 ID 後，下次打開會自動連線。你和女友使用同一個帳本 ID，就會同步同一份資料。帳本 ID 不要太簡單，例如不要只叫 love。</p>
     </section>
 
     <section class="balance-card">
@@ -415,8 +415,13 @@
     try {
       app = initializeApp(firebaseConfig);
       db = getFirestore(app);
-      setStatus("ready", "Firebase 已準備，請輸入帳本 ID 連線");
-      if (walletIdInput.value.trim()) connectWallet();
+      const savedWalletId = walletIdInput.value.trim();
+      if (savedWalletId) {
+        setStatus("ready", `正在自動連線：${savedWalletId}`);
+        connectWallet();
+      } else {
+        setStatus("ready", "Firebase 已準備，請輸入帳本 ID 連線");
+      }
     } catch (error) {
       console.error(error);
       setStatus("error", "Firebase 尚未設定，請先貼上 firebaseConfig");
