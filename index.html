@@ -156,9 +156,29 @@
       background: #fffaf7;
       color: var(--text);
       border-radius: 14px;
-      padding: 13px 14px;
+      padding: 11px 13px;
       font-size: 18px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      min-height: 48px;
+    }
+
+    .calculator-icon {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: var(--primary-dark);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .calculator-icon circle,
+    .calculator-icon rect {
+      vector-effect: non-scaling-stroke;
     }
 
     .calculator-panel {
@@ -442,7 +462,21 @@
       <label for="amountInput">金額</label>
       <div class="amount-row">
         <input id="amountInput" type="number" inputmode="numeric" min="1" placeholder="例如：500" />
-        <button class="calculator-toggle-btn" id="calculatorToggleBtn" type="button" aria-label="開啟計算機">🧮</button>
+        <button class="calculator-toggle-btn" id="calculatorToggleBtn" type="button" aria-label="開啟計算機">
+          <svg class="calculator-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="6" y="3" width="12" height="18" rx="2.5"></rect>
+            <rect x="8.5" y="5.5" width="7" height="3" rx="0.8"></rect>
+            <circle cx="9" cy="11.5" r="1"></circle>
+            <circle cx="12" cy="11.5" r="1"></circle>
+            <circle cx="15" cy="11.5" r="1"></circle>
+            <circle cx="9" cy="14.5" r="1"></circle>
+            <circle cx="12" cy="14.5" r="1"></circle>
+            <circle cx="15" cy="14.5" r="1"></circle>
+            <circle cx="9" cy="17.5" r="1"></circle>
+            <circle cx="12" cy="17.5" r="1"></circle>
+            <circle cx="15" cy="17.5" r="1"></circle>
+          </svg>
+        </button>
       </div>
 
       <div class="calculator-panel" id="calculatorPanel">
@@ -475,7 +509,7 @@
           <button class="calc-btn utility" type="button" data-calc="use-current">帶入</button>
         </div>
         <button class="calc-apply-btn" id="calculatorApplyBtn" type="button">套用到金額</button>
-        <p class="calc-hint">可以直接算例如 860+140+60，按「套用到金額」後會自動填入上方金額欄。</p>
+        <p class="calc-hint">可以直接算例如 860+140+60。若結果是負數，會自動切換為「支出」，並把絕對值填入金額欄。</p>
       </div>
 
       <label for="noteInput">備註</label>
@@ -678,11 +712,19 @@
 
     function applyCalculatorValue() {
       evaluateCalculatorExpression(true);
-      if (!calculatorValue || calculatorValue <= 0) {
-        alert("計算結果要大於 0 才能套用");
+
+      if (!calculatorValue || calculatorValue === 0) {
+        alert("計算結果不能是 0");
         return;
       }
-      amountInput.value = String(calculatorValue);
+
+      if (calculatorValue < 0) {
+        setType("expense");
+        amountInput.value = String(Math.abs(calculatorValue));
+      } else {
+        amountInput.value = String(calculatorValue);
+      }
+
       calculatorPanel.classList.remove("show");
     }
 
