@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ff7a59" />
+  <title>情侶儲值帳本</title>
+  <style>
+    :root {
+      --bg: #fff7f2;
+      --card: #ffffff;
+      --text: #2b2b2b;
+      --muted: #777;
+      --primary: #ff7a59;
+      --primary-dark: #e35d3d;
+      --green: #21a67a;
+      --red: #e14d4d;
+      --line: #f0d8cf;
+      --shadow: 0 10px 30px rgba(120, 60, 30, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: linear-gradient(180deg, #fff3ec 0%, #fffaf7 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 20px 0 40px;
+    }
+
+    .header {
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .balance-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 122, 89, 0.16);
+      margin-bottom: 16px;
+    }
+
+    .balance-label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .balance {
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      background: #fff7f2;
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid var(--line);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .form-card, .list-card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 122, 89, 0.12);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .type-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .type-btn {
+      border: 1px solid var(--line);
+      background: #fffaf7;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .type-btn.active.deposit {
+      background: rgba(33, 166, 122, 0.12);
+      color: var(--green);
+      border-color: rgba(33, 166, 122, 0.3);
+    }
+
+    .type-btn.active.expense {
+      background: rgba(225, 77, 77, 0.12);
+      color: var(--red);
+      border-color: rgba(225, 77, 77, 0.3);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 10px 0 6px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+      background: #fffaf7;
+      color: var(--text);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 122, 89, 0.15);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 14px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 122, 89, 0.28);
+    }
+
+    .submit-btn:active {
+      background: var(--primary-dark);
+      transform: translateY(1px);
+    }
+
+    .record-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .record {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 16px;
+      background: #fffaf7;
+      border: 1px solid var(--line);
+    }
+
+    .record-main {
+      min-width: 0;
+    }
+
+    .record-note {
+      font-weight: 800;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .record-date {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .record-amount {
+      text-align: right;
+      font-weight: 900;
+      font-size: 17px;
+    }
+
+    .record-amount.deposit {
+      color: var(--green);
+    }
+
+    .record-amount.expense {
+      color: var(--red);
+    }
+
+    .delete-btn {
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 6px;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 20px 0;
+      font-size: 14px;
+    }
+
+    .danger-zone {
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .reset-btn {
+      border: none;
+      background: transparent;
+      color: #b55;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="header">
+      <h1 class="title">情侶儲值帳本</h1>
+      <p class="subtitle">女友先儲值，你先付款，支出從餘額扣。甜蜜可以，但帳要清楚。</p>
+    </section>
+
+    <section class="balance-card">
+      <div class="balance-label">目前剩餘儲值金</div>
+      <div class="balance" id="balance">$0</div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">總儲值</div>
+          <div class="stat-value" id="totalDeposit">$0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">總支出</div>
+          <div class="stat-value" id="totalExpense">$0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2 class="section-title">新增紀錄</h2>
+      <div class="type-toggle">
+        <button class="type-btn active deposit" id="depositBtn" type="button">＋ 儲值</button>
+        <button class="type-btn expense" id="expenseBtn" type="button">－ 支出</button>
+      </div>
+
+      <label for="dateInput">日期</label>
+      <input id="dateInput" type="date" />
+
+      <label for="amountInput">金額</label>
+      <input id="amountInput" type="number" inputmode="numeric" min="1" placeholder="例如：500" />
+
+      <label for="noteInput">備註</label>
+      <input id="noteInput" type="text" placeholder="例如：晚餐、電影、現金儲值" />
+
+      <button class="submit-btn" id="addBtn" type="button">新增儲值</button>
+    </section>
+
+    <section class="list-card">
+      <h2 class="section-title">交易紀錄</h2>
+      <div class="record-list" id="recordList"></div>
+      <div class="danger-zone">
+        <button class="reset-btn" id="resetBtn" type="button">清空全部資料</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "couple-wallet-records-v1";
+
+    let currentType = "deposit";
+    let records = loadRecords();
+
+    const balanceEl = document.getElementById("balance");
+    const totalDepositEl = document.getElementById("totalDeposit");
+    const totalExpenseEl = document.getElementById("totalExpense");
+    const recordListEl = document.getElementById("recordList");
+    const depositBtn = document.getElementById("depositBtn");
+    const expenseBtn = document.getElementById("expenseBtn");
+    const addBtn = document.getElementById("addBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const dateInput = document.getElementById("dateInput");
+    const amountInput = document.getElementById("amountInput");
+    const noteInput = document.getElementById("noteInput");
+
+    dateInput.value = new Date().toISOString().slice(0, 10);
+
+    depositBtn.addEventListener("click", () => setType("deposit"));
+    expenseBtn.addEventListener("click", () => setType("expense"));
+    addBtn.addEventListener("click", addRecord);
+    resetBtn.addEventListener("click", resetAll);
+
+    render();
+
+    function setType(type) {
+      currentType = type;
+      depositBtn.classList.toggle("active", type === "deposit");
+      expenseBtn.classList.toggle("active", type === "expense");
+      addBtn.textContent = type === "deposit" ? "新增儲值" : "新增支出";
+    }
+
+    function addRecord() {
+      const date = dateInput.value;
+      const amount = Number(amountInput.value);
+      const note = noteInput.value.trim() || (currentType === "deposit" ? "現金儲值" : "共同支出");
+
+      if (!date) {
+        alert("請選擇日期");
+        return;
+      }
+
+      if (!amount || amount <= 0) {
+        alert("請輸入正確金額");
+        return;
+      }
+
+      records.push({
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        type: currentType,
+        date,
+        amount,
+        note,
+        createdAt: Date.now()
+      });
+
+      saveRecords();
+      amountInput.value = "";
+      noteInput.value = "";
+      render();
+    }
+
+    function deleteRecord(id) {
+      const ok = confirm("確定刪除這筆紀錄嗎？");
+      if (!ok) return;
+      records = records.filter(record => record.id !== id);
+      saveRecords();
+      render();
+    }
+
+    function resetAll() {
+      const ok = confirm("確定要清空全部資料嗎？這招很兇，不能復原喔。");
+      if (!ok) return;
+      records = [];
+      saveRecords();
+      render();
+    }
+
+    function render() {
+      const totalDeposit = records
+        .filter(record => record.type === "deposit")
+        .reduce((sum, record) => sum + record.amount, 0);
+
+      const totalExpense = records
+        .filter(record => record.type === "expense")
+        .reduce((sum, record) => sum + record.amount, 0);
+
+      const balance = totalDeposit - totalExpense;
+
+      balanceEl.textContent = formatMoney(balance);
+      totalDepositEl.textContent = formatMoney(totalDeposit);
+      totalExpenseEl.textContent = formatMoney(totalExpense);
+
+      const sortedRecords = [...records].sort((a, b) => {
+        if (a.date === b.date) return b.createdAt - a.createdAt;
+        return b.date.localeCompare(a.date);
+      });
+
+      if (sortedRecords.length === 0) {
+        recordListEl.innerHTML = '<div class="empty">目前沒有紀錄。第一筆就從女友儲值開始吧。</div>';
+        return;
+      }
+
+      recordListEl.innerHTML = sortedRecords.map(record => {
+        const sign = record.type === "deposit" ? "+" : "-";
+        const typeText = record.type === "deposit" ? "儲值" : "支出";
+        return `
+          <div class="record">
+            <div class="record-main">
+              <div class="record-note">${escapeHTML(record.note)}</div>
+              <div class="record-date">${record.date}・${typeText}</div>
+              <button class="delete-btn" onclick="deleteRecord('${record.id}')">刪除</button>
+            </div>
+            <div class="record-amount ${record.type}">${sign}${formatMoney(record.amount)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function formatMoney(value) {
+      return "$" + Number(value).toLocaleString("zh-TW");
+    }
+
+    function loadRecords() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveRecords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+    }
+
+    function escapeHTML(text) {
+      return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>
