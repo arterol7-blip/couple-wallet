@@ -144,6 +144,106 @@
       align-items: end;
     }
 
+    .amount-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .calculator-toggle-btn {
+      border: 1px solid var(--line);
+      background: #fffaf7;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .calculator-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: #fffaf7;
+      border-radius: 18px;
+    }
+
+    .calculator-panel.show {
+      display: block;
+    }
+
+    .calculator-display {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px 12px;
+      font-size: 20px;
+      font-weight: 800;
+      text-align: right;
+      overflow-x: auto;
+      white-space: nowrap;
+      margin-bottom: 10px;
+    }
+
+    .calculator-result {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+      min-height: 18px;
+      margin-bottom: 10px;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .calc-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 0;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .calc-btn.operator {
+      color: var(--primary-dark);
+      background: rgba(255, 122, 89, 0.08);
+    }
+
+    .calc-btn.utility {
+      color: var(--muted);
+      background: #f8f1ed;
+    }
+
+    .calc-apply-btn {
+      width: 100%;
+      margin-top: 10px;
+      border: none;
+      background: var(--green);
+      color: white;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .calc-hint {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
     label {
       display: block;
       font-size: 13px;
@@ -340,7 +440,43 @@
       <input id="dateInput" type="date" />
 
       <label for="amountInput">金額</label>
-      <input id="amountInput" type="number" inputmode="numeric" min="1" placeholder="例如：500" />
+      <div class="amount-row">
+        <input id="amountInput" type="number" inputmode="numeric" min="1" placeholder="例如：500" />
+        <button class="calculator-toggle-btn" id="calculatorToggleBtn" type="button" aria-label="開啟計算機">🧮</button>
+      </div>
+
+      <div class="calculator-panel" id="calculatorPanel">
+        <div class="calculator-display" id="calculatorDisplay">0</div>
+        <div class="calculator-result" id="calculatorResult">結果：0</div>
+        <div class="calculator-grid">
+          <button class="calc-btn utility" type="button" data-calc="clear">C</button>
+          <button class="calc-btn utility" type="button" data-calc="backspace">⌫</button>
+          <button class="calc-btn operator" type="button" data-calc="/">÷</button>
+          <button class="calc-btn operator" type="button" data-calc="*">×</button>
+
+          <button class="calc-btn" type="button" data-calc="7">7</button>
+          <button class="calc-btn" type="button" data-calc="8">8</button>
+          <button class="calc-btn" type="button" data-calc="9">9</button>
+          <button class="calc-btn operator" type="button" data-calc="-">−</button>
+
+          <button class="calc-btn" type="button" data-calc="4">4</button>
+          <button class="calc-btn" type="button" data-calc="5">5</button>
+          <button class="calc-btn" type="button" data-calc="6">6</button>
+          <button class="calc-btn operator" type="button" data-calc="+">＋</button>
+
+          <button class="calc-btn" type="button" data-calc="1">1</button>
+          <button class="calc-btn" type="button" data-calc="2">2</button>
+          <button class="calc-btn" type="button" data-calc="3">3</button>
+          <button class="calc-btn operator" type="button" data-calc="equals">＝</button>
+
+          <button class="calc-btn" type="button" data-calc="0">0</button>
+          <button class="calc-btn" type="button" data-calc="00">00</button>
+          <button class="calc-btn" type="button" data-calc=".">.</button>
+          <button class="calc-btn utility" type="button" data-calc="use-current">帶入</button>
+        </div>
+        <button class="calc-apply-btn" id="calculatorApplyBtn" type="button">套用到金額</button>
+        <p class="calc-hint">可以直接算例如 860+140+60，按「套用到金額」後會自動填入上方金額欄。</p>
+      </div>
 
       <label for="noteInput">備註</label>
       <input id="noteInput" type="text" placeholder="例如：晚餐、電影、現金儲值" />
@@ -388,6 +524,8 @@
     let currentWalletId = "";
     let records = [];
     let unsubscribe = null;
+    let calculatorExpression = "";
+    let calculatorValue = 0;
 
     const balanceEl = document.getElementById("balance");
     const totalDepositEl = document.getElementById("totalDeposit");
@@ -399,6 +537,11 @@
     const dateInput = document.getElementById("dateInput");
     const amountInput = document.getElementById("amountInput");
     const noteInput = document.getElementById("noteInput");
+    const calculatorToggleBtn = document.getElementById("calculatorToggleBtn");
+    const calculatorPanel = document.getElementById("calculatorPanel");
+    const calculatorDisplay = document.getElementById("calculatorDisplay");
+    const calculatorResult = document.getElementById("calculatorResult");
+    const calculatorApplyBtn = document.getElementById("calculatorApplyBtn");
     const walletIdInput = document.getElementById("walletIdInput");
     const connectBtn = document.getElementById("connectBtn");
     const statusDot = document.getElementById("statusDot");
@@ -411,6 +554,11 @@
     expenseBtn.addEventListener("click", () => setType("expense"));
     addBtn.addEventListener("click", addRecord);
     connectBtn.addEventListener("click", connectWallet);
+    calculatorToggleBtn.addEventListener("click", toggleCalculator);
+    calculatorApplyBtn.addEventListener("click", applyCalculatorValue);
+    document.querySelectorAll("[data-calc]").forEach(button => {
+      button.addEventListener("click", () => handleCalculatorInput(button.dataset.calc));
+    });
 
     try {
       app = initializeApp(firebaseConfig);
@@ -438,6 +586,110 @@
 
     function normalizeWalletId(value) {
       return value.trim().replace(/[^a-zA-Z0-9-_]/g, "-").slice(0, 60);
+    }
+
+    function toggleCalculator() {
+      calculatorPanel.classList.toggle("show");
+    }
+
+    function handleCalculatorInput(value) {
+      if (value === "clear") {
+        calculatorExpression = "";
+        calculatorValue = 0;
+        updateCalculatorDisplay();
+        return;
+      }
+
+      if (value === "backspace") {
+        calculatorExpression = calculatorExpression.slice(0, -1);
+        updateCalculatorDisplay();
+        return;
+      }
+
+      if (value === "use-current") {
+        const currentAmount = amountInput.value.trim();
+        if (currentAmount) {
+          calculatorExpression = currentAmount;
+          updateCalculatorDisplay();
+        }
+        return;
+      }
+
+      if (value === "equals") {
+        evaluateCalculatorExpression(true);
+        return;
+      }
+
+      const lastChar = calculatorExpression.slice(-1);
+      const isOperator = ["+", "-", "*", "/"].includes(value);
+      const lastIsOperator = ["+", "-", "*", "/"].includes(lastChar);
+
+      if (isOperator && calculatorExpression === "") return;
+      if (isOperator && lastIsOperator) {
+        calculatorExpression = calculatorExpression.slice(0, -1) + value;
+      } else {
+        calculatorExpression += value;
+      }
+
+      updateCalculatorDisplay();
+    }
+
+    function updateCalculatorDisplay() {
+      calculatorDisplay.textContent = formatCalculatorText(calculatorExpression || "0");
+      evaluateCalculatorExpression(false);
+    }
+
+    function evaluateCalculatorExpression(shouldReplaceExpression) {
+      if (!calculatorExpression) {
+        calculatorValue = 0;
+        calculatorResult.textContent = "結果：0";
+        return;
+      }
+
+      if (!/^[0-9+\-*/. ]+$/.test(calculatorExpression)) {
+        calculatorResult.textContent = "算式格式錯誤";
+        return;
+      }
+
+      const lastChar = calculatorExpression.slice(-1);
+      if (["+", "-", "*", "/", "."].includes(lastChar)) {
+        calculatorResult.textContent = "結果：等待輸入";
+        return;
+      }
+
+      try {
+        const result = Function(`"use strict"; return (${calculatorExpression})`)();
+        if (!Number.isFinite(result)) {
+          calculatorResult.textContent = "結果：無法計算";
+          return;
+        }
+
+        calculatorValue = Math.round(result * 100) / 100;
+        calculatorResult.textContent = `結果：${formatCalculatorText(String(calculatorValue))}`;
+
+        if (shouldReplaceExpression) {
+          calculatorExpression = String(calculatorValue);
+          calculatorDisplay.textContent = formatCalculatorText(calculatorExpression);
+        }
+      } catch (error) {
+        calculatorResult.textContent = "結果：算式未完成";
+      }
+    }
+
+    function applyCalculatorValue() {
+      evaluateCalculatorExpression(true);
+      if (!calculatorValue || calculatorValue <= 0) {
+        alert("計算結果要大於 0 才能套用");
+        return;
+      }
+      amountInput.value = String(calculatorValue);
+      calculatorPanel.classList.remove("show");
+    }
+
+    function formatCalculatorText(text) {
+      return String(text)
+        .replaceAll("*", "×")
+        .replaceAll("/", "÷");
     }
 
     function connectWallet() {
