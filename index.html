@@ -21,9 +21,7 @@
       --shadow: 0 10px 30px rgba(120, 60, 30, 0.12);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -40,9 +38,7 @@
       padding: 20px 0 40px;
     }
 
-    .header {
-      margin-bottom: 16px;
-    }
+    .header { margin-bottom: 16px; }
 
     .title {
       font-size: 28px;
@@ -57,13 +53,28 @@
       font-size: 14px;
     }
 
-    .balance-card {
+    .sync-card,
+    .balance-card,
+    .form-card,
+    .list-card {
       background: var(--card);
+      border-radius: 22px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 122, 89, 0.12);
+      margin-bottom: 16px;
+    }
+
+    .balance-card {
       border-radius: 24px;
       padding: 22px;
-      box-shadow: var(--shadow);
       border: 1px solid rgba(255, 122, 89, 0.16);
-      margin-bottom: 16px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 800;
     }
 
     .balance-label {
@@ -104,19 +115,85 @@
       font-weight: 800;
     }
 
-    .form-card, .list-card {
-      background: var(--card);
-      border-radius: 22px;
-      padding: 16px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255, 122, 89, 0.12);
-      margin-bottom: 16px;
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
     }
 
-    .section-title {
-      margin: 0 0 12px;
-      font-size: 18px;
-      font-weight: 800;
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #aaa;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .status-dot.online { background: var(--green); }
+    .status-dot.error { background: var(--red); }
+
+    .wallet-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 10px 0 6px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+      background: #fffaf7;
+      color: var(--text);
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 122, 89, 0.15);
+    }
+
+    .small-btn,
+    .submit-btn {
+      border: none;
+      background: var(--primary);
+      color: white;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255, 122, 89, 0.22);
+      white-space: nowrap;
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 14px;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 17px;
+    }
+
+    .small-btn:active,
+    .submit-btn:active {
+      background: var(--primary-dark);
+      transform: translateY(1px);
     }
 
     .type-toggle {
@@ -149,49 +226,6 @@
       border-color: rgba(225, 77, 77, 0.3);
     }
 
-    label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin: 10px 0 6px;
-      font-weight: 700;
-    }
-
-    input {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-size: 16px;
-      outline: none;
-      background: #fffaf7;
-      color: var(--text);
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(255, 122, 89, 0.15);
-    }
-
-    .submit-btn {
-      width: 100%;
-      margin-top: 14px;
-      border: none;
-      background: var(--primary);
-      color: white;
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(255, 122, 89, 0.28);
-    }
-
-    .submit-btn:active {
-      background: var(--primary-dark);
-      transform: translateY(1px);
-    }
-
     .record-list {
       display: flex;
       flex-direction: column;
@@ -209,9 +243,7 @@
       border: 1px solid var(--line);
     }
 
-    .record-main {
-      min-width: 0;
-    }
+    .record-main { min-width: 0; }
 
     .record-note {
       font-weight: 800;
@@ -232,13 +264,8 @@
       font-size: 17px;
     }
 
-    .record-amount.deposit {
-      color: var(--green);
-    }
-
-    .record-amount.expense {
-      color: var(--red);
-    }
+    .record-amount.deposit { color: var(--green); }
+    .record-amount.expense { color: var(--red); }
 
     .delete-btn {
       border: none;
@@ -257,17 +284,11 @@
       font-size: 14px;
     }
 
-    .danger-zone {
-      text-align: center;
-      margin-top: 8px;
-    }
-
-    .reset-btn {
-      border: none;
-      background: transparent;
-      color: #b55;
-      font-size: 13px;
-      cursor: pointer;
+    .hint {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -275,7 +296,22 @@
   <main class="app">
     <section class="header">
       <h1 class="title">情侶儲值帳本</h1>
-      <p class="subtitle">女友先儲值，你先付款，支出從餘額扣。甜蜜可以，但帳要清楚。</p>
+      <p class="subtitle">雙人同步版：同一個帳本 ID，就會看到同一份紀錄。</p>
+    </section>
+
+    <section class="sync-card">
+      <h2 class="section-title">共用帳本</h2>
+      <div class="wallet-row">
+        <div>
+          <label for="walletIdInput">帳本 ID</label>
+          <input id="walletIdInput" type="text" placeholder="例如：love-wallet-2026" />
+        </div>
+        <button class="small-btn" id="connectBtn" type="button">連線</button>
+      </div>
+      <div class="status-row">
+        <div><span class="status-dot" id="statusDot"></span><span id="statusText">尚未連線</span></div>
+      </div>
+      <p class="hint">你和女友輸入同一個帳本 ID，就會同步同一份資料。帳本 ID 不要太簡單，例如不要只叫 love。</p>
     </section>
 
     <section class="balance-card">
@@ -315,17 +351,43 @@
     <section class="list-card">
       <h2 class="section-title">交易紀錄</h2>
       <div class="record-list" id="recordList"></div>
-      <div class="danger-zone">
-        <button class="reset-btn" id="resetBtn" type="button">清空全部資料</button>
-      </div>
     </section>
   </main>
 
-  <script>
-    const STORAGE_KEY = "couple-wallet-records-v1";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      deleteDoc,
+      doc,
+      onSnapshot,
+      query,
+      orderBy,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    // 重要：等等把 Firebase 提供給你的設定貼到這裡。
+    // 這不是密碼，但 Firestore Rules 一定要設定好，不然等於開門請人亂寫。
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp8WsQtQ4VTuNn3tllEHWi1THW8L-WdC0",
+      authDomain: "couple-wallet-677bd.firebaseapp.com",
+      projectId: "couple-wallet-677bd",
+      storageBucket: "couple-wallet-677bd.firebasestorage.app",
+      messagingSenderId: "145115085829",
+      appId: "1:145115085829:web:4a86292c07b512263bb06c",
+      measurementId: "G-4PDNHDHRPW"
+    };
+
+    const LAST_WALLET_KEY = "couple-wallet-last-wallet-id-v2";
+
+    let app;
+    let db;
     let currentType = "deposit";
-    let records = loadRecords();
+    let currentWalletId = "";
+    let records = [];
+    let unsubscribe = null;
 
     const balanceEl = document.getElementById("balance");
     const totalDepositEl = document.getElementById("totalDeposit");
@@ -334,17 +396,31 @@
     const depositBtn = document.getElementById("depositBtn");
     const expenseBtn = document.getElementById("expenseBtn");
     const addBtn = document.getElementById("addBtn");
-    const resetBtn = document.getElementById("resetBtn");
     const dateInput = document.getElementById("dateInput");
     const amountInput = document.getElementById("amountInput");
     const noteInput = document.getElementById("noteInput");
+    const walletIdInput = document.getElementById("walletIdInput");
+    const connectBtn = document.getElementById("connectBtn");
+    const statusDot = document.getElementById("statusDot");
+    const statusText = document.getElementById("statusText");
 
     dateInput.value = new Date().toISOString().slice(0, 10);
+    walletIdInput.value = localStorage.getItem(LAST_WALLET_KEY) || "";
 
     depositBtn.addEventListener("click", () => setType("deposit"));
     expenseBtn.addEventListener("click", () => setType("expense"));
     addBtn.addEventListener("click", addRecord);
-    resetBtn.addEventListener("click", resetAll);
+    connectBtn.addEventListener("click", connectWallet);
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      setStatus("ready", "Firebase 已準備，請輸入帳本 ID 連線");
+      if (walletIdInput.value.trim()) connectWallet();
+    } catch (error) {
+      console.error(error);
+      setStatus("error", "Firebase 尚未設定，請先貼上 firebaseConfig");
+    }
 
     render();
 
@@ -355,7 +431,52 @@
       addBtn.textContent = type === "deposit" ? "新增儲值" : "新增支出";
     }
 
-    function addRecord() {
+    function normalizeWalletId(value) {
+      return value.trim().replace(/[^a-zA-Z0-9-_]/g, "-").slice(0, 60);
+    }
+
+    function connectWallet() {
+      if (!db) {
+        alert("Firebase 還沒設定好，先貼 firebaseConfig。學長別急，這裡急不得。");
+        return;
+      }
+
+      const walletId = normalizeWalletId(walletIdInput.value);
+      if (!walletId || walletId.length < 8) {
+        alert("帳本 ID 至少建議 8 個字以上，而且不要太好猜。例：love-wallet-2026-a7k9");
+        return;
+      }
+
+      walletIdInput.value = walletId;
+      currentWalletId = walletId;
+      localStorage.setItem(LAST_WALLET_KEY, walletId);
+
+      if (unsubscribe) unsubscribe();
+
+      setStatus("ready", `連線中：${walletId}`);
+
+      const recordsRef = collection(db, "wallets", currentWalletId, "records");
+      const recordsQuery = query(recordsRef, orderBy("createdAt", "desc"));
+
+      unsubscribe = onSnapshot(recordsQuery, snapshot => {
+        records = snapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+        setStatus("online", `已同步：${currentWalletId}`);
+        render();
+      }, error => {
+        console.error(error);
+        setStatus("error", "同步失敗，請檢查 Firestore Rules 或 firebaseConfig");
+      });
+    }
+
+    async function addRecord() {
+      if (!currentWalletId) {
+        alert("請先輸入帳本 ID 並連線");
+        return;
+      }
+
       const date = dateInput.value;
       const amount = Number(amountInput.value);
       const note = noteInput.value.trim() || (currentType === "deposit" ? "現金儲值" : "共同支出");
@@ -370,45 +491,44 @@
         return;
       }
 
-      records.push({
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-        type: currentType,
-        date,
-        amount,
-        note,
-        createdAt: Date.now()
-      });
-
-      saveRecords();
-      amountInput.value = "";
-      noteInput.value = "";
-      render();
+      try {
+        const recordsRef = collection(db, "wallets", currentWalletId, "records");
+        await addDoc(recordsRef, {
+          type: currentType,
+          date,
+          amount,
+          note,
+          createdAt: serverTimestamp()
+        });
+        amountInput.value = "";
+        noteInput.value = "";
+      } catch (error) {
+        console.error(error);
+        alert("新增失敗，請檢查網路或 Firebase 權限設定");
+      }
     }
 
-    function deleteRecord(id) {
-      const ok = confirm("確定刪除這筆紀錄嗎？");
+    window.deleteRecord = async function(id) {
+      if (!currentWalletId) return;
+      const ok = confirm("確定刪除這筆紀錄嗎？兩邊手機都會同步刪除喔。");
       if (!ok) return;
-      records = records.filter(record => record.id !== id);
-      saveRecords();
-      render();
-    }
 
-    function resetAll() {
-      const ok = confirm("確定要清空全部資料嗎？這招很兇，不能復原喔。");
-      if (!ok) return;
-      records = [];
-      saveRecords();
-      render();
-    }
+      try {
+        await deleteDoc(doc(db, "wallets", currentWalletId, "records", id));
+      } catch (error) {
+        console.error(error);
+        alert("刪除失敗，請檢查網路或 Firebase 權限設定");
+      }
+    };
 
     function render() {
       const totalDeposit = records
         .filter(record => record.type === "deposit")
-        .reduce((sum, record) => sum + record.amount, 0);
+        .reduce((sum, record) => sum + Number(record.amount || 0), 0);
 
       const totalExpense = records
         .filter(record => record.type === "expense")
-        .reduce((sum, record) => sum + record.amount, 0);
+        .reduce((sum, record) => sum + Number(record.amount || 0), 0);
 
       const balance = totalDeposit - totalExpense;
 
@@ -417,12 +537,12 @@
       totalExpenseEl.textContent = formatMoney(totalExpense);
 
       const sortedRecords = [...records].sort((a, b) => {
-        if (a.date === b.date) return b.createdAt - a.createdAt;
-        return b.date.localeCompare(a.date);
+        if (a.date === b.date) return String(b.id).localeCompare(String(a.id));
+        return String(b.date).localeCompare(String(a.date));
       });
 
       if (sortedRecords.length === 0) {
-        recordListEl.innerHTML = '<div class="empty">目前沒有紀錄。第一筆就從女友儲值開始吧。</div>';
+        recordListEl.innerHTML = '<div class="empty">目前沒有紀錄。連線後新增一筆，另一台手機就會看到了。</div>';
         return;
       }
 
@@ -432,34 +552,29 @@
         return `
           <div class="record">
             <div class="record-main">
-              <div class="record-note">${escapeHTML(record.note)}</div>
-              <div class="record-date">${record.date}・${typeText}</div>
+              <div class="record-note">${escapeHTML(record.note || "")}</div>
+              <div class="record-date">${escapeHTML(record.date || "") }・${typeText}</div>
               <button class="delete-btn" onclick="deleteRecord('${record.id}')">刪除</button>
             </div>
-            <div class="record-amount ${record.type}">${sign}${formatMoney(record.amount)}</div>
+            <div class="record-amount ${record.type}">${sign}${formatMoney(record.amount || 0)}</div>
           </div>
         `;
       }).join("");
+    }
+
+    function setStatus(type, text) {
+      statusDot.className = "status-dot";
+      if (type === "online") statusDot.classList.add("online");
+      if (type === "error") statusDot.classList.add("error");
+      statusText.textContent = text;
     }
 
     function formatMoney(value) {
       return "$" + Number(value).toLocaleString("zh-TW");
     }
 
-    function loadRecords() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function saveRecords() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-    }
-
     function escapeHTML(text) {
-      return text
+      return String(text)
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
