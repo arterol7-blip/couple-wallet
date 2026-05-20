@@ -410,6 +410,54 @@
       font-size: 12px;
       line-height: 1.5;
     }
+
+    .calculator-rules {
+      margin-top: 12px;
+      border-top: 1px dashed var(--line);
+      padding-top: 10px;
+    }
+
+    .calculator-rules summary {
+      cursor: pointer;
+      list-style: none;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .calculator-rules summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .calculator-rules-content {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .calculator-rules-content strong {
+      color: var(--primary-dark);
+    }
+
+    .calculator-example {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid rgba(255, 122, 89, 0.12);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
@@ -509,7 +557,33 @@
           <button class="calc-btn utility" type="button" data-calc="use-current">帶入</button>
         </div>
         <button class="calc-apply-btn" id="calculatorApplyBtn" type="button">套用到金額</button>
-        <p class="calc-hint">計算機套用採儲值帳本邏輯：結果為正數會記為儲值；結果為負數會自動切換為支出，並把絕對值填入金額欄。直接手動輸入金額時，仍依照上方選擇的儲值／支出紀錄。</p>
+        <p class="calc-hint">計算機套用採儲值帳本邏輯：結果為正數會記為儲值；結果為負數會自動切換為支出。</p>
+
+        <details class="calculator-rules">
+          <summary>📘 查看計算機規則說明</summary>
+          <div class="calculator-rules-content">
+            <strong>這不是一般記帳 App，而是共享儲值餘額帳本。</strong><br>
+            當對方先把現金交給你時，記錄為「儲值」。<br>
+            之後共同消費時，再從餘額中扣除並記錄為「支出」。
+
+            <div class="calculator-example">目前餘額
+＝ 所有儲值總和 − 所有支出總和</div>
+
+            <strong>計算機採用「餘額變化」概念：</strong>
+
+            <div class="calculator-example">正數結果
+→ 視為餘額增加（儲值）
+
+負數結果
+→ 視為餘額減少（支出）</div>
+
+            <strong>推薦輸入方式：</strong>
+
+            <div class="calculator-example">-100 + 1000
+＝ 900
+→ 代表目前還剩 900 儲值餘額</div>
+          </div>
+        </details>
       </div>
 
       <label for="noteInput">備註</label>
