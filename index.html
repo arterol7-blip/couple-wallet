@@ -151,6 +151,29 @@
       align-items: center;
     }
 
+    .note-tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .note-tool-btn {
+      border: 1px solid var(--line);
+      background: #fffaf7;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 11px 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .note-tool-btn:active {
+      transform: translateY(1px);
+      background: #fff1e9;
+    }
+
     .calculator-toggle-btn {
       border: 1px solid var(--line);
       background: #fffaf7;
@@ -588,6 +611,12 @@
 
       <label for="noteInput">備註</label>
       <input id="noteInput" type="text" placeholder="例如：晚餐、電影、現金儲值" />
+      <div class="note-tools">
+        <button class="note-tool-btn" id="scanTextBtn" type="button">📷 掃描文字</button>
+        <button class="note-tool-btn" id="pasteTextBtn" type="button">📋 貼上備註</button>
+      </div>
+      <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none" />
+      <p class="hint">掃描文字會開啟 iPhone 相機；可用 Live Text 複製文字後，回到 App 點「貼上備註」。</p>
 
       <button class="submit-btn" id="addBtn" type="button">新增儲值</button>
     </section>
@@ -650,6 +679,9 @@
     const calculatorDisplay = document.getElementById("calculatorDisplay");
     const calculatorResult = document.getElementById("calculatorResult");
     const calculatorApplyBtn = document.getElementById("calculatorApplyBtn");
+    const scanTextBtn = document.getElementById("scanTextBtn");
+    const pasteTextBtn = document.getElementById("pasteTextBtn");
+    const cameraInput = document.getElementById("cameraInput");
     const walletIdInput = document.getElementById("walletIdInput");
     const connectBtn = document.getElementById("connectBtn");
     const statusDot = document.getElementById("statusDot");
@@ -664,6 +696,8 @@
     connectBtn.addEventListener("click", connectWallet);
     calculatorToggleBtn.addEventListener("click", toggleCalculator);
     calculatorApplyBtn.addEventListener("click", applyCalculatorValue);
+    scanTextBtn.addEventListener("click", openCameraForLiveText);
+    pasteTextBtn.addEventListener("click", pasteClipboardToNote);
     document.querySelectorAll("[data-calc]").forEach(button => {
       button.addEventListener("click", () => handleCalculatorInput(button.dataset.calc));
     });
@@ -694,6 +728,34 @@
 
     function normalizeWalletId(value) {
       return value.trim().replace(/[^a-zA-Z0-9-_]/g, "-").slice(0, 60);
+    }
+
+    function openCameraForLiveText() {
+      cameraInput.click();
+    }
+
+    async function pasteClipboardToNote() {
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+          alert("這個瀏覽器不支援直接讀取剪貼簿，請手動長按備註欄貼上。");
+          return;
+        }
+
+        const text = await navigator.clipboard.readText();
+        const cleanedText = text.trim();
+
+        if (!cleanedText) {
+          alert("剪貼簿目前沒有文字");
+          return;
+        }
+
+        noteInput.value = noteInput.value.trim()
+          ? `${noteInput.value.trim()} ${cleanedText}`
+          : cleanedText;
+      } catch (error) {
+        console.error(error);
+        alert("無法讀取剪貼簿。請確認瀏覽器權限，或手動長按備註欄貼上。");
+      }
     }
 
     function toggleCalculator() {
