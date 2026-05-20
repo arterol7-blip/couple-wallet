@@ -153,7 +153,7 @@
 
     .note-tools {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 8px;
       margin-top: 8px;
     }
@@ -612,11 +612,9 @@
       <label for="noteInput">備註</label>
       <input id="noteInput" type="text" placeholder="例如：晚餐、電影、現金儲值" />
       <div class="note-tools">
-        <button class="note-tool-btn" id="scanTextBtn" type="button">📷 掃描文字</button>
         <button class="note-tool-btn" id="pasteTextBtn" type="button">📋 貼上備註</button>
       </div>
-      <input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none" />
-      <p class="hint">掃描文字會開啟 iPhone 相機；可用 Live Text 複製文字後，回到 App 點「貼上備註」。</p>
+      <p class="hint">可先使用 iPhone 相機或照片中的原況文字（Live Text）複製文字，再回到 App 一鍵貼上到備註。</p>
 
       <button class="submit-btn" id="addBtn" type="button">新增儲值</button>
     </section>
@@ -679,9 +677,7 @@
     const calculatorDisplay = document.getElementById("calculatorDisplay");
     const calculatorResult = document.getElementById("calculatorResult");
     const calculatorApplyBtn = document.getElementById("calculatorApplyBtn");
-    const scanTextBtn = document.getElementById("scanTextBtn");
     const pasteTextBtn = document.getElementById("pasteTextBtn");
-    const cameraInput = document.getElementById("cameraInput");
     const walletIdInput = document.getElementById("walletIdInput");
     const connectBtn = document.getElementById("connectBtn");
     const statusDot = document.getElementById("statusDot");
@@ -696,7 +692,6 @@
     connectBtn.addEventListener("click", connectWallet);
     calculatorToggleBtn.addEventListener("click", toggleCalculator);
     calculatorApplyBtn.addEventListener("click", applyCalculatorValue);
-    scanTextBtn.addEventListener("click", openCameraForLiveText);
     pasteTextBtn.addEventListener("click", pasteClipboardToNote);
     document.querySelectorAll("[data-calc]").forEach(button => {
       button.addEventListener("click", () => handleCalculatorInput(button.dataset.calc));
@@ -728,10 +723,6 @@
 
     function normalizeWalletId(value) {
       return value.trim().replace(/[^a-zA-Z0-9-_]/g, "-").slice(0, 60);
-    }
-
-    function openCameraForLiveText() {
-      cameraInput.click();
     }
 
     async function pasteClipboardToNote() {
